@@ -1,0 +1,19 @@
+## Build and temporary files
+[Bb]in/
+[Oo]bj/
+app.db-shm
+app.db-wal
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vscode/
+.vs/
+.opencode/
+
+## OS generated files
+.DS_Store
+Thumbs.db
