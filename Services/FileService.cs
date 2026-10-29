@@ -31,7 +31,14 @@ public class FileService(ApplicationDbContext db) : IFileService
         file.CurrentVersionNumber = version.Number; file.UpdatedUtc = DateTime.UtcNow; db.Add(version); await db.SaveChangesAsync(); return version;
     }
     public async Task<bool> RenameAsync(Guid id, string name) { ValidateName(name); var f = await db.CodeFiles.FindAsync(id); if (f is null || f.IsDeleted || await db.CodeFiles.AnyAsync(x => x.Id != id && !x.IsDeleted && x.Name == name)) return false; f.Name=name; f.Extension=Extension(name); f.UpdatedUtc=DateTime.UtcNow; await db.SaveChangesAsync(); return true; }
-    public async Task<bool> DeleteAsync(Guid id) { var f=await db.CodeFiles.FindAsync(id); if(f is null)return false; f.IsDeleted=true; await db.SaveChangesAsync(); return true; }
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var f = await db.CodeFiles.Include(x => x.Versions).FirstOrDefaultAsync(x => x.Id == id);
+        if (f is null) return false;
+        db.CodeFiles.Remove(f);
+        await db.SaveChangesAsync();
+        return true;
+    }
     public async Task<CodeVersion?> RestoreAsync(Guid id,int number) { var f=await GetAsync(id); var v=f?.Versions.FirstOrDefault(x=>x.Number==number); return v is null ? null : await SaveAsync(id,v.Content,$"Restored {v.Label}", major: true); }
     static void Validate(string name,string content){ValidateName(name);ValidateContent(content);}
     static void ValidateName(string name){ if(string.IsNullOrWhiteSpace(name)||name.Contains('/')||name.Contains('\\')||name.Contains("..")||name.Length>180||!Allowed(name)) throw new InvalidOperationException("Use a supported, safe source filename."); }
