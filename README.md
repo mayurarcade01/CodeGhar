@@ -117,7 +117,5 @@ http://localhost:5000
 
 ---
 
-## 🏛️ Academic Assessment Mapping (Total: 24 Marks)
-* **Project Development & Demonstration (16 Marks):** Full MVC implementation, MySQL database integration, CRUD functionality, state management, and live demonstration.
-* **Poster Presentation (8 Marks):** High-resolution A2 technical poster (`Poster-A2_CodeGhar_AMTICS_UTU.pdf`) describing system architecture, objectives, technologies, and results.
+
 
